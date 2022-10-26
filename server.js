@@ -10,10 +10,10 @@ const cors = require('cors');
 
 const app = express();
 
-
+//Enable Cors
 app.use(cors());
 
-//Alt port
+
 const PORT = process.env.PORT || 3002;
 
 //**ENDPOINTS**//
@@ -27,8 +27,8 @@ app.get('/', (request, response) => {
 app.get('/weather', (request, response, next) => {
   try {
     let cityName = request.query.cityName;
-    let lat = request.query.lat;
-    let lon = request.query.lon;
+    // let lat = request.query.lat;
+    // let lon = request.query.lon;
     let city = data.find(city => city.city_name === cityName);
     let weatherPush = city.data.map( day => new Forecast(day));
     console.log(city);
@@ -60,7 +60,7 @@ app.get('*', (request, response) => {
 
 //**ERROR HANDLING**//
 
-app.use('*', (error, request, response, next) => {
+app.use('*', (error, request, response) => {
   response.status(500).send(error.message);
 });
 
