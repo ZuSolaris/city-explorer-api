@@ -5,7 +5,7 @@ console.log('PoL');
 //*** REQUIRES ***//
 const express = require('express');
 require('dotenv').config();
-let data = require('./data/weather.json');
+let weatherData = require('./data/weather.json');
 const cors = require('cors');
 
 const app = express();
@@ -29,9 +29,10 @@ app.get('/weather', (request, response, next) => {
     let cityName = request.query.cityName;
     // let lat = request.query.lat;
     // let lon = request.query.lon;
-    let city = data.find(city => city.city_name === cityName);
-    let weatherPush = city.data.map( day => new Forecast(day));
+    let city = weatherData.find(city => city.city_name === cityName);
     console.log(city);
+    let weatherPush = city.data.map( day => new Forecast(day));
+    console.log(weatherPush);
     response.status(200).send(weatherPush);
   } catch (error) {
 
