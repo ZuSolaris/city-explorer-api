@@ -26,7 +26,7 @@ app.get('/', (request, response) => {
 
 app.get('/weather', (request, response, next) => {
   try {
-    let cityName = request.query.cityName;
+    let cityName = request.query.searchQuery;
     // let lat = request.query.lat;
     // let lon = request.query.lon;
     let city = weatherData.find(city => city.city_name === cityName);
