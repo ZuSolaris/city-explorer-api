@@ -5,7 +5,7 @@ console.log('PoL');
 //*** REQUIRES ***//
 const express = require('express');
 require('dotenv').config();
-let weatherData = require('./data/weather.json');
+const axios = require('axios');
 const cors = require('cors');
 
 const app = express();
@@ -24,16 +24,14 @@ app.get('/', (request, response) => {
 });
 
 
-app.get('/weather', (request, response, next) => {
+app.get('/weather', async (request, response, next) => {
   try {
-    let cityName = request.query.searchQuery;
-    // let lat = request.query.lat;
-    // let lon = request.query.lon;
-    let city = weatherData.find(city => city.city_name === cityName);
-    console.log(city);
-    let weatherPush = city.data.map( day => new Forecast(day));
-    console.log(weatherPush);
-    response.status(200).send(weatherPush);
+    let {searchQuery,lat,lon} = request.query;
+    console.log(lat, lon);
+    let results = await axios.get(`http://api.weatherbit.io/v2.0/forecast/daily/?key=${process.env.WEATHERBIT_API_KEY}&lat=${lat}&lon=${lon}`)
+    console.log(results.data);
+    let weatherData = results.data.data.map(day => new Forecast(day));
+    response.status(200).send(weatherData);
   } catch (error) {
 
     next(error);
