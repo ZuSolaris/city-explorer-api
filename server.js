@@ -5,9 +5,9 @@ console.log('PoL');
 //*** REQUIRES ***//
 const express = require('express');
 require('dotenv').config();
-const axios = require('axios');
 const cors = require('cors');
-const { response } = require('express');
+const getWeather = require('./Weather');
+const getMovie = require('./Movie');
 
 const app = express();
 
@@ -25,52 +25,10 @@ app.get('/', (request, response) => {
 });
 
 //**Weather GET */
-app.get('/weather', async (request, response, next) => {
-  try {
-    let { searchQuery, lat, lon } = request.query;
-    console.log(lat, lon);
-    let results = await axios.get(`http://api.weatherbit.io/v2.0/forecast/daily/?key=${process.env.WEATHERBIT_API_KEY}&lat=${lat}&lon=${lon}`);
-    console.log(results.data);
-    let weatherData = results.data.data.map(day => new Forecast(day));
-    response.status(200).send(weatherData);
-  } catch (error) {
-
-    next(error);
-  }
-});
+app.get('/weather', getWeather);
 
 //**Movie GET*//
-app.get('/Movie', async (request, response, next) => {
-  try {
-    let {query} = request.query;
-    let url = (`https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${query}`);
-    console.log('looking up movies', url);
-    let movieResults = await axios.get(url);
-    let movieData = movieResults.data.results.map(show => new Showtime(show));
-    console.log('found some movies',movieData.length);
-    response.status(200).send(movieData);
-  } catch (error) {
-    next(error);
-  }
-});
-
-class Forecast {
-  constructor(forecast) {
-    this.date = forecast.valid_date;
-    this.desc = forecast.weather.description;
-  }
-
-
-}
-
-class Showtime {
-  constructor(showTime) {
-    this.title = showTime.title;
-    this.review = showTime.overview;
-
-
-  }
-}
+app.get('/Movie', getMovie);
 
 app.get('*', (request, response) => {
   response.status(404).send('This area does not exist.');
