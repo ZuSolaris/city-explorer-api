@@ -1,48 +1,42 @@
 'use strict';
 
-console.log('PoL');
-
-//*** REQUIRES ***//
+//Requires Section
 const express = require('express');
+const app = express();
+//Add Ons
 require('dotenv').config();
 const cors = require('cors');
-const getWeather = require('./Weather');
-const getMovie = require('./Movie');
-
-const app = express();
 
 //Enable Cors
 app.use(cors());
 
+//Modules
+const getWeather = require('./modules/weather');
+const getMovie = require('./modules/movie');
 
+//Define Port
 const PORT = process.env.PORT || 3002;
 
-//**ENDPOINTS**//
+//ENDPOINTS
 
 app.get('/', (request, response) => {
   console.log('Test');
-  response.status(200).send('Verified and working.');
+  response.status(200).send('Server is operating correctly.');
 });
 
-//**Weather GET */
+//GET Requests
 app.get('/weather', getWeather);
 
-//**Movie GET*//
-app.get('/Movie', getMovie);
+
+app.get('/movie', getMovie);
 
 app.get('*', (request, response) => {
   response.status(404).send('This area does not exist.');
 });
 
-
-
-
-
-//**ERROR HANDLING**//
-
-app.use('*', (error, request, response) => {
+app.use((error, request, response) => {
   response.status(500).send(error.message);
 });
 
-//****SERVER START***//
-app.listen(PORT, () => console.log(`SUCCESS we are running on PORT: ${PORT}`));
+app.listen(PORT, () => console.log(`Server up on ${PORT}`));
+
